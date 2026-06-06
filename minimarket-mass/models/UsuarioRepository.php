@@ -4,6 +4,7 @@ require_once __DIR__ . '/Usuario.php';
 require_once __DIR__ . '/../config/conexion.php';
 
 class UsuarioRepository {
+
     public function buscarPorUsername(string $username): ?Usuario {
         try {
             $pdo  = getConexion();
@@ -22,6 +23,19 @@ class UsuarioRepository {
         } catch (PDOException $e) {
             error_log('[UsuarioRepository] ' . $e->getMessage());
             return null;
+        }
+    }
+
+    // B1: registrar último acceso con prepared statement
+    public function registrarAcceso(int $id): void {
+        try {
+            $pdo  = getConexion();
+            $stmt = $pdo->prepare(
+                "UPDATE usuarios SET ultimo_acceso = NOW() WHERE id = :id"
+            );
+            $stmt->execute([':id' => $id]);
+        } catch (PDOException $e) {
+            error_log('[UsuarioRepository] ' . $e->getMessage());
         }
     }
 }

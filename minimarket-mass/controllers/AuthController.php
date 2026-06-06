@@ -46,15 +46,19 @@ class AuthController {
             return;
         }
 
+        // B1: registrar último acceso ← NUEVO
+        $repo->registrarAcceso($usuario->getId());
+
         // Login correcto: resetear contador
         $_SESSION['intentos_fallidos'] = 0;
 
         $_SESSION['usuario'] = [
-            'id'       => $usuario->getId(),
-            'username' => $usuario->getUsername(),
-            'nombre'   => $usuario->getNombreCompleto(),
-            'rol'      => $usuario->getRol(),
-            'tienda'   => $usuario->getTienda(),
+            'id'            => $usuario->getId(),
+            'username'      => $usuario->getUsername(),
+            'nombre'        => $usuario->getNombreCompleto(),
+            'rol'           => $usuario->getRol(),
+            'tienda'        => $usuario->getTienda(),
+            'ultimo_acceso' => date('d/m/Y H:i'), // B2: guardar en sesión ← NUEVO
         ];
 
         header('Location: index.php?accion=catalogo');
