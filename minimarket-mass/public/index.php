@@ -36,9 +36,30 @@ switch ($accion) {
         require __DIR__ . '/../views/admin/panel.php';
         break;
 
+    case 'nuevo-producto':
+        requiereLogin();
+        (new ProductoController())->nuevo();
+        break;
+
+    case 'guardar-producto':
+        requiereLogin();
+        (new ProductoController())->guardar();
+        break;
+
+    case 'editar-producto':
+        requiereLogin();
+        (new ProductoController())->editar();
+        break;
+
+    case 'reportes':
+        requiereLogin();
+        (new ProductoController())->reportes();
+        break;
+
     case 'catalogo':
     default:
         requiereLogin();
         (new ProductoController())->listar();
         break;
+
 }
