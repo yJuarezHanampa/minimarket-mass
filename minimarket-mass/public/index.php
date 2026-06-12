@@ -7,8 +7,9 @@ require_once __DIR__ . '/../helpers/sesion.php';
 require_once __DIR__ . '/../controllers/AuthController.php';
 require_once __DIR__ . '/../controllers/ProductoController.php';
 
-$accion = $_GET['accion'] ?? 'catalogo';
-$auth   = new AuthController();
+$accion     = $_GET['accion'] ?? 'catalogo';
+$auth       = new AuthController();
+$controller = new ProductoController();
 
 switch ($accion) {
 
@@ -29,7 +30,7 @@ switch ($accion) {
         header('Location: index.php?accion=login');
         exit;
 
-    // A2: panel solo para admin
+    // Panel solo para admin
     case 'panel-admin':
         requiereRol('admin');
         $usuario = usuarioActual();
@@ -38,28 +39,38 @@ switch ($accion) {
 
     case 'nuevo-producto':
         requiereLogin();
-        (new ProductoController())->nuevo();
+        $controller->nuevo();
         break;
 
     case 'guardar-producto':
         requiereLogin();
-        (new ProductoController())->guardar();
+        $controller->guardar();
         break;
 
     case 'editar-producto':
         requiereLogin();
-        (new ProductoController())->editar();
+        $controller->editar();
+        break;
+
+    case 'actualizar-producto':
+        requiereLogin();
+        $controller->actualizar();
         break;
 
     case 'reportes':
         requiereLogin();
-        (new ProductoController())->reportes();
+        $controller->reportes();
         break;
+
+    case 'eliminar-producto':
+    requiereLogin();
+    $controller->eliminar();
+    break;
 
     case 'catalogo':
     default:
         requiereLogin();
-        (new ProductoController())->listar();
+        $controller->listar();
         break;
 
 }

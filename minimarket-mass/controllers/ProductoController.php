@@ -71,14 +71,60 @@ class ProductoController {
     exit;
     }
 
-    // Muestra la vista de editar (por ahora en construcción)
-    public function editar(): void {
-      require __DIR__ . '/../views/productos/editar.php';
+    // Muestra el formulario con los datos actuales del producto
+public function editar(): void
+{
+    $codigo = $_GET['codigo'] ?? '';
+
+
+    $producto = $this->repo->buscarPorCodigo($codigo);
+
+    if ($producto === null) {
+        header('Location: index.php?accion=catalogo');
+        exit;
     }
 
-    // Muestra la vista de reportes (por ahora en construcción)
-    public function reportes(): void {
-        require __DIR__ . '/../views/productos/reportes.php';
+    require __DIR__ . '/../views/productos/editar.php';
+}
+
+// Procesa el formulario y guarda los cambios (Post-Redirect-Get)
+public function actualizar(): void
+{
+    $codigo = $_POST['codigo'] ?? '';
+    $nombre = trim($_POST['nombre'] ?? '');
+    $precio = $_POST['precio'] ?? '';
+    $stock  = $_POST['stock']  ?? '';
+
+    // Validación
+    if ($codigo === '' || $nombre === '' || $precio === '' || $stock === '') {
+        $error = 'Todos los campos son obligatorios.';
+        $producto = new Producto($codigo, $nombre, (float)$precio, (int)$stock);
+        require __DIR__ . '/../views/productos/editar.php';
+        return;
     }
+
+    $producto = new Producto($codigo, $nombre, (float)$precio, (int)$stock);
+
+    $this->repo->actualizar($producto);
+
+    header('Location: index.php?accion=catalogo&editado=1');
+    exit;
+
+}
+
+// ── Eliminar un producto por código de barras ──────────────────────────
+public function eliminar(): void {
+    $codigo = trim($_GET['codigo'] ?? '');
+
+    if ($codigo === '') {
+        header('Location: index.php?accion=catalogo');
+        exit;
+    }
+
+    $this->repo->eliminar($codigo);
+
+    header('Location: index.php?accion=catalogo&eliminado=1');
+    exit;
+}
 }
 ?>
